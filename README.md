@@ -59,7 +59,7 @@ $address->country
 => App\Structs\GeoLocation { ... }
 ```
 
-**Hint: Snake cased properties are used to mimic the behaviour of Eloquent attributes.**
+_Hint: Snake cased properties are used to mimic the behaviour of Eloquent attributes._
 
 ### Attribute Casting
 
