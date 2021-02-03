@@ -3,6 +3,7 @@
 namespace ProAI\Struct\Casts;
 
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
+use Illuminate\Support\Str;
 use ProAI\Struct\Struct;
 use InvalidArgumentException;
 
@@ -40,11 +41,16 @@ class ComposedStructCast implements CastsAttributes
         $properties = [];
 
         foreach ($attributes as $name => $attribute) {
-            if (! Str::startsWith($name.'_')) {
+            if (is_null($attribute) || ! Str::startsWith($name, $key.'_')) {
                 continue;
             }
 
-            $properties[Str::after($name.'_')] = $attribute;
+            $properties[Str::after($name, $key.'_')] = $attribute;
+        }
+
+        // Assume that result is null when all properties are null.
+        if (count($properties) === 0) {
+            return null;
         }
 
         $class = $this->class;
@@ -63,6 +69,10 @@ class ComposedStructCast implements CastsAttributes
      */
     public function set($model, $key, $value, $attributes)
     {
+        if (is_null($value)) {
+            return null;
+        }
+
         if (! $value instanceof Struct) {
             throw new InvalidArgumentException('The given value is not a struct instance, "'.get_class($value).'" given.');
         }
