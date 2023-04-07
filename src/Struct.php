@@ -30,7 +30,7 @@ abstract class Struct implements Arrayable, JsonSerializable, Castable
      */
     public function __construct(array $properties = [])
     {
-        $reflections = $this->getReflectionProperties();
+        $reflections = static::getReflectionProperties();
 
         foreach ($reflections as $reflection) {
             $name = $reflection->getName();
@@ -90,19 +90,37 @@ abstract class Struct implements Arrayable, JsonSerializable, Castable
     }
 
     /**
+     * Get the property names.
+     *
+     * @return array
+     */
+    public static function getPropertyNames()
+    {
+        $reflections = static::getReflectionProperties();
+
+        $result = [];
+
+        foreach($reflections as $reflection) {
+            $name = $reflection->getName();
+            $result[] = $name;
+        }
+
+        return $result;
+    }
+
+    /**
      * Get the properties.
      *
      * @return array
      */
     public function getProperties()
     {
-        $reflections = $this->getReflectionProperties();
+        $reflections = static::getReflectionProperties();
 
         $result = [];
 
         foreach($reflections as $reflection) {
             $name = $reflection->getName();
-
             $result[$name] = $this->{$name};
         }
 
@@ -126,7 +144,7 @@ abstract class Struct implements Arrayable, JsonSerializable, Castable
      *
      * @return \ReflectionProperty[]
      */
-    protected function getReflectionProperties()
+    protected static function getReflectionProperties()
     {
         if (isset(static::$cache[static::class])) {
             return static::$cache[static::class];

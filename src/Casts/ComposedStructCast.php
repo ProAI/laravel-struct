@@ -69,17 +69,17 @@ class ComposedStructCast implements CastsAttributes
      */
     public function set($model, $key, $value, $attributes)
     {
-        if (is_null($value)) {
-            return null;
-        }
-
-        if (! $value instanceof Struct) {
-            throw new InvalidArgumentException('The given value is not a struct instance, "'.get_class($value).'" given.');
-        }
-
         $class = $this->class;
 
-        $value = $class::serializeDatabase($value);
+        if (is_null($value)) {
+            $value = array_fill_keys($class::getPropertyNames(), null);
+        } else {
+            if (! $value instanceof Struct) {
+                throw new InvalidArgumentException('The given value is not a struct instance, "'.get_class($value).'" given.');
+            }
+
+            $value = $class::serializeDatabase($value);
+        }
 
         return $this->composeProperties($key, $value);
     }
