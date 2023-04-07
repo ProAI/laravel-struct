@@ -149,7 +149,7 @@ abstract class Struct implements Arrayable, JsonSerializable, Castable
      *
      * @return array
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return $this->toArray();
     }
